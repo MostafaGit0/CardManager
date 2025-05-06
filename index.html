@@ -569,8 +569,8 @@
                             <span id="card-detail-expiry">MM/YY</span>
                         </p>
                         <p>
-                            <span>Card Holder:</span>
-                            <span id="card-detail-holder">John Doe</span>
+                            <span>3 Numbers On Da Back:</span>
+                            <span id="card-detail-three">123</span>
                         </p>
                         <p>
                             <span>Card Type:</span>
@@ -600,8 +600,8 @@
                             <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" required>
                         </div>
                         <div class="form-group">
-                            <label for="card-holder">Card Holder Name</label>
-                            <input type="text" id="card-holder" placeholder="Full Name" required>
+                            <label for="card-cvv">3 Numbers On Da Back</label>
+                            <input type="text" id="card-cvv" placeholder="123" required>
                         </div>
 
                         <div class="form-actions">
@@ -688,14 +688,14 @@
         const cardDetailNickname = document.getElementById('card-detail-nickname');
         const cardDetailNumber = document.getElementById('card-detail-number');
         const cardDetailExpiry = document.getElementById('card-detail-expiry');
-        const cardDetailHolder = document.getElementById('card-detail-holder');
+        const cardDetailHolder = document.getElementById('card-detail-three');
         const cardDetailType = document.getElementById('card-detail-type');
         
         // Form inputs
         const cardNicknameInput = document.getElementById('card-nickname');
         const cardNumberInput = document.getElementById('card-number');
         const cardExpiryInput = document.getElementById('card-expiry');
-        const cardHolderInput = document.getElementById('card-holder');
+        const cardHolderInput = document.getElementById('card-cvv');
         
         // Auth state observer
         onAuthStateChanged(auth, (user) => {
