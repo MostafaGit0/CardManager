@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Manager</title>
+    <!-- Add React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@react-spring/web@9.5.5/dist/web.umd.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         :root {
             --primary-color: #fffbeb;
@@ -55,16 +60,20 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        box-shadow 0.5s ease, 
+                        background-position 10s linear infinite;
             box-shadow: 0 4px 6px var(--shadow-color);
             overflow: hidden;
             position: relative;
             margin: 0 auto;
+            background-size: 200% 200%;
+            animation: cardPulse 8s infinite alternate ease-in-out;
         }
 
         .card-preview:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px var(--shadow-color);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px var(--shadow-color);
         }
 
         .card-preview h3 {
@@ -75,14 +84,17 @@
         }
 
         .card-preview p {
-            color: #6b7280;
+            color: white;
             font-size: 0.9rem;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .add-btn-container {
             display: flex;
             justify-content: center;
             margin: 2rem 0;
+            animation: fadeIn 1s 0.5s forwards;
         }
 
         .add-card-btn {
@@ -93,11 +105,13 @@
             padding: 1rem 2rem;
             font-size: 1.2rem;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             box-shadow: 0 4px 6px var(--shadow-color);
             display: flex;
             align-items: center;
             gap: 10px;
+            overflow: hidden;
+            position: relative;
         }
 
         .add-card-btn:hover {
@@ -199,6 +213,7 @@
             border-radius: 20px;
             padding: 2rem;
             box-shadow: 0 10px 25px var(--shadow-color);
+            animation: fadeIn 0.5s ease;
         }
 
         .card-details h2 {
@@ -271,15 +286,7 @@
         }
 
         .card-type-badge {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            background-color: var(--accent-color);
-            color: var(--text-color);
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
+            display: none; /* Hide the badge */
         }
 
         @keyframes fadeIn {
@@ -293,8 +300,13 @@
             }
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
+        @keyframes cardPulse {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
         }
 
         .notification {
@@ -333,28 +345,28 @@
 
         /* Card color schemes */
         .card-visa {
-            background: linear-gradient(135deg, #1a1f71, #2639a6);
+            background: linear-gradient(135deg, #1c2e94, #3a4ebd);
             color: white;
         }
 
         .card-mastercard {
-            background: linear-gradient(135deg, #ff5f00, #f79e1b);
+            background: linear-gradient(135deg, #ff8a00, #ffbd45);
             color: white;
         }
 
         .card-amex {
-            background: linear-gradient(135deg, #006fcf, #10509e);
+            background: linear-gradient(135deg, #0071ce, #3d9bff);
             color: white;
         }
 
         .card-discover {
-            background: linear-gradient(135deg, #ff6600, #d35400);
+            background: linear-gradient(135deg, #ff6d00, #ffad75);
             color: white;
         }
 
         .card-generic {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
+            background: linear-gradient(135deg, #fef3c7, #fffbeb);
+            color: var(--text-color);
         }
 
         .card-icon-container {
@@ -376,6 +388,7 @@
             background-color: white;
             border-radius: 20px;
             box-shadow: 0 4px 6px var(--shadow-color);
+            animation: fadeIn 0.5s ease;
         }
 
         .auth-container h2 {
@@ -425,6 +438,7 @@
             margin-bottom: 2rem;
             align-items: center;
             gap: 1rem;
+            animation: fadeIn 0.5s ease;
         }
 
         .user-email {
@@ -475,11 +489,41 @@
         .btn .loader {
             display: none;
         }
+
+        /* Styles for SplitText */
+        .split-text {
+            display: inline-block;
+        }
+
+        /* Styles for ShinyText */
+        .shiny-text {
+            display: inline-block;
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0) 60%
+            );
+            background-size: 200% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 100% 0;
+            }
+            100% {
+                background-position: -100% 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Card Manager</h1>
+        <h1 id="app-title">Card Manager</h1>
 
         <!-- Authentication View -->
         <div id="auth-view">
@@ -543,7 +587,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Add Card
+                        <span id="add-btn-text">Add Card</span>
                     </button>
                 </div>
             </div>
@@ -867,19 +911,17 @@
             const cardClass = getCardClass(cardType);
             cardElement.classList.add(cardClass);
             
-            // Last 4 digits of card number
-            //const last4 = card.number.replace(/\s/g, '').slice(-4);
-            
             // Card icon
             const cardIcon = getCardIcon(cardType);
             
+            // Display full card number - no masking
             cardElement.innerHTML = `
-            <div class="card-type-badge">${cardType}</div>
+                <div class="card-type-badge">${cardType}</div>
                 <div class="card-icon-container">
                     ${cardIcon}
                 </div>
                 <h3>${card.nickname}</h3>
-                <p>${card.number}</p>
+                <p>${formatCardNumber(card.number)}</p>
             `;
             
             cardElement.addEventListener('click', () => {
@@ -953,9 +995,9 @@
                         return;
                     }
                     
-                    // Populate card details
+                    // Populate card details - show full numbers without masking
                     cardDetailNickname.textContent = card.nickname;
-                    cardDetailNumber.textContent = formatMaskedCardNumber(card.number);
+                    cardDetailNumber.textContent = formatCardNumber(card.number);
                     cardDetailExpiry.textContent = card.expiry;
                     cardDetailHolder.textContent = card.holder;
                     cardDetailType.textContent = detectCardType(card.number);
@@ -1019,9 +1061,19 @@
         }
         
         function formatCardNumber(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            let formattedValue = '';
+            let value;
+            if (typeof e === 'string') {
+                // When formatting an existing card number
+                value = e.replace(/\s/g, '');
+            } else {
+                // When formatting input
+                value = e.target.value.replace(/\D/g, '');
+                e.target.value = formatCardNumber(value);
+                return;
+            }
             
+            // Add spaces after every 4 digits
+            let formattedValue = '';
             for (let i = 0; i < value.length; i++) {
                 if (i > 0 && i % 4 === 0) {
                     formattedValue += ' ';
@@ -1029,7 +1081,7 @@
                 formattedValue += value[i];
             }
             
-            e.target.value = formattedValue;
+            return formattedValue;
         }
         
         function formatExpiryDate(e) {
@@ -1044,12 +1096,6 @@
             }
             
             e.target.value = formattedValue;
-        }
-        
-        function formatMaskedCardNumber(number) {
-            const cleaned = number.replace(/\s/g, '');
-            //const last4 = cleaned.slice(-4);
-            return cleaned;
         }
         
         function detectCardType(number) {
@@ -1131,6 +1177,52 @@
                 notification.classList.remove('show');
             }, 3000);
         }
+    </script>
+
+    <!-- React animations script for title and buttons -->
+    <script type="text/babel">
+        // SplitText Component
+        const SplitText = ({ text, className = '' }) => {
+            const { animated } = ReactSpringWeb;
+            const [springs, api] = ReactSpringWeb.useSprings(
+                text.length,
+                i => ({
+                    from: { opacity: 0, transform: 'translateY(20px)' },
+                    to: { opacity: 1, transform: 'translateY(0px)' },
+                    delay: i * 100,
+                    config: { tension: 200, friction: 15 }
+                })
+            );
+
+            return (
+                <span className={`split-text ${className}`}>
+                    {springs.map((props, i) => (
+                        <animated.span key={i} style={props}>
+                            {text[i] === ' ' ? '\u00A0' : text[i]}
+                        </animated.span>
+                    ))}
+                </span>
+            );
+        };
+
+        // ShinyText Component for buttons
+        const ShinyText = ({ text }) => {
+            return (
+                <span className="shiny-text">{text}</span>
+            );
+        };
+
+        // Apply SplitText to title
+        ReactDOM.render(
+            <SplitText text="Card Manager" />,
+            document.getElementById('app-title')
+        );
+
+        // Apply ShinyText to the Add Card button text
+        ReactDOM.render(
+            <ShinyText text="Add Card" />,
+            document.getElementById('add-btn-text')
+        );
     </script>
 </body>
 </html>
