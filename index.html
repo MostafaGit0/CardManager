@@ -11,8 +11,8 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         :root {
-            --primary-color: #fffbeb;
-            --accent-color: #fef3c7;
+            --primary-color: #FFF8F0;
+            --accent-color: #D46A6A;
             --text-color: #1f2937;
             --shadow-color: rgba(0, 0, 0, 0.1);
         }
@@ -365,8 +365,18 @@
         }
 
         .card-generic {
-            background: linear-gradient(135deg, #fef3c7, #fffbeb);
-            color: var(--text-color);
+            background: linear-gradient(135deg, #D46A6A, #FFF8F0);
+            color: #1f2937; /* Set the default text color for this card type */
+        }
+
+        .card-generic p {
+            color: #1f2937; /* Dark text for better contrast */
+            text-shadow: none; /* Remove the text shadow that's meant for light text on dark backgrounds */
+        }
+
+        /* Add this rule for the headings in generic cards if needed */
+        .card-generic h3 {
+            color: #1f2937; /* Dark text for the card nickname */
         }
 
         .card-icon-container {
@@ -1179,50 +1189,83 @@
         }
     </script>
 
-    <!-- React animations script for title and buttons -->
+
+    <!-- First, make sure these script tags are in the correct order in your head section -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@react-spring/web@9.5.5/dist/web.umd.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Then use this updated animation script -->
     <script type="text/babel">
-        // SplitText Component
-        const SplitText = ({ text, className = '' }) => {
-            const { animated } = ReactSpringWeb;
-            const [springs, api] = ReactSpringWeb.useSprings(
-                text.length,
-                i => ({
-                    from: { opacity: 0, transform: 'translateY(20px)' },
-                    to: { opacity: 1, transform: 'translateY(0px)' },
-                    delay: i * 100,
-                    config: { tension: 200, friction: 15 }
-                })
-            );
+        // Wait for the page to fully load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Simple animated title without relying on React Spring
+            const SplitText = ({ text }) => {
+                // Create an array of characters from the text
+                const characters = text.split('');
+                
+                return (
+                    <span className="split-text">
+                        {characters.map((char, index) => (
+                            <span 
+                                key={index}
+                                style={{
+                                    display: 'inline-block',
+                                    animation: `fadeInUp 0.5s forwards`,
+                                    animationDelay: `${index * 0.05}s`,
+                                    opacity: 0,
+                                    transform: 'translateY(20px)'
+                                }}
+                            >
+                                {char === ' ' ? '\u00A0' : char}
+                            </span>
+                        ))}
+                    </span>
+                );
+            };
 
-            return (
-                <span className={`split-text ${className}`}>
-                    {springs.map((props, i) => (
-                        <animated.span key={i} style={props}>
-                            {text[i] === ' ' ? '\u00A0' : text[i]}
-                        </animated.span>
-                    ))}
-                </span>
-            );
-        };
+            // Simple shiny text animation
+            const ShinyText = ({ text }) => {
+                return (
+                    <span className="shiny-text">{text}</span>
+                );
+            };
 
-        // ShinyText Component for buttons
-        const ShinyText = ({ text }) => {
-            return (
-                <span className="shiny-text">{text}</span>
-            );
-        };
+            // Add the necessary animation keyframes to the document
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
 
-        // Apply SplitText to title
-        ReactDOM.render(
-            <SplitText text="Card Manager" />,
-            document.getElementById('app-title')
-        );
+            // Render the title if the element exists
+            const titleElement = document.getElementById('app-title');
+            if (titleElement) {
+                ReactDOM.render(
+                    <SplitText text="Card Manager" />,
+                    titleElement
+                );
+            }
 
-        // Apply ShinyText to the Add Card button text
-        ReactDOM.render(
-            <ShinyText text="Add Card" />,
-            document.getElementById('add-btn-text')
-        );
+            // Render the button text if the element exists
+            const buttonTextElement = document.getElementById('add-btn-text');
+            if (buttonTextElement) {
+                ReactDOM.render(
+                    <ShinyText text="Add Card" />,
+                    buttonTextElement
+                );
+            }
+        });
     </script>
 </body>
 </html>
