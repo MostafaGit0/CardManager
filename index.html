@@ -562,7 +562,7 @@
                     <div class="card-info">
                         <p>
                             <span>Card Number:</span>
-                            <span id="card-detail-number">**** **** **** 1234</span>
+                            <span id="card-detail-number">1234 1234 1234 1234</span>
                         </p>
                         <p>
                             <span>Expiration Date:</span>
@@ -868,7 +868,7 @@
             cardElement.classList.add(cardClass);
             
             // Last 4 digits of card number
-            const last4 = card.number.replace(/\s/g, '').slice(-4);
+            //const last4 = card.number.replace(/\s/g, '').slice(-4);
             
             // Card icon
             const cardIcon = getCardIcon(cardType);
@@ -879,7 +879,7 @@
                     ${cardIcon}
                 </div>
                 <h3>${card.nickname}</h3>
-                <p>**** ${last4}</p>
+                <p>${cleaned}</p>
             `;
             
             cardElement.addEventListener('click', () => {
@@ -1047,10 +1047,9 @@
         }
         
         function formatMaskedCardNumber(number) {
-            // Keep only the last 4 digits visible
             const cleaned = number.replace(/\s/g, '');
-            const last4 = cleaned.slice(-4);
-            return `**** **** **** ${last4}`;
+            //const last4 = cleaned.slice(-4);
+            return cleaned;
         }
         
         function detectCardType(number) {
