@@ -11,729 +11,817 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         :root {
-            --primary-color: #FFF8F0;
-            --accent-color: #D46A6A;
-            --text-color: #1f2937;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            
-            /* Portfolio variables */
-            --first-hue: 250;
-            --sat: 66%;
-            --lig: 75%;
-            --second-hue: 219;
-            --first-color: hsl(var(--first-hue), var(--sat), var(--lig));
-            --first-color-alt: hsl(var(--first-hue), var(--sat), 71%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            padding: 2rem;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--text-color);
-            font-size: 2.5rem;
-        }
-
-        .loading-spinner {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            position: absolute; /* Position absolutely */
-            left: 50%; /* Center horizontally */
-            top: 50%; /* Center vertically */
-            transform: translate(-50%, -50%); /* Offset by half width/height for true centering */
-            z-index: 10; /* Ensure it's above other content */
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-            border-radius: 10px; /* Rounded corners */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-        }
-
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--accent-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        .loading-spinner p {
-            font-weight: 500;
-            color: var(--text-color);
-        }
-
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 2rem;
-            position: relative; 
-            min-height: 200px; 
-        }
-
-        /* Enhanced card styling with portfolio animations */
-        .card-preview {
-            background: linear-gradient(
-                180deg,
-                hsla(var(--first-hue), var(--sat), var(--lig), 0.5),
-                hsla(var(--first-hue), var(--sat), var(--lig), 0.1)
-            );
-            border-radius: 50%;
-            height: 200px;
-            width: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 6px var(--shadow-color);
-            overflow: hidden;
-            position: relative;
-            margin: 0 auto;
-            background-size: 200% 200%;
-            animation: cardPulse 8s infinite alternate ease-in-out;
-            perspective: 1000px; /* Added for 3D perspective */
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        box-shadow 0.5s ease, 
-                        background-position 10s linear infinite;
-        }
-
-        .card-preview:hover {
-            transform: translateY(-8px) scale(1.05) rotateY(5deg);
-            box-shadow: 0 15px 30px rgba(var(--first-hue), var(--sat), var(--lig), 0.15),
-                        0 0 15px rgba(212, 106, 106, 0.5);
-        }
-
-        /* Reveal animation from portfolio */
-        .reveal-animation {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        .reveal-animation.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Ripple Effect on Hover */
-        .card-preview::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            border-radius: 50%;
-            opacity: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
-            transform: scale(0.7);
-            transition: opacity 0.3s, transform 0.3s;
-            pointer-events: none;
-        }
-
-        .card-preview:hover::after {
-            opacity: 1;
-            transform: scale(1.2);
-            animation: rippleEffect 1.5s infinite;
-        }
-
-        /* Content Raise Effect */
-        .card-preview .card-icon-container,
-        .card-preview h3,
-        .card-preview p {
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .card-preview:hover .card-icon-container {
-            transform: translateY(-7px) scale(1.05);
-        }
-
-        .card-preview:hover h3 {
-            transform: translateY(-3px);
-        }
-
-        .card-preview:hover p {
-            transform: translateY(-1px);
-        }
-
-        /* New Animation Keyframes */
-        @keyframes pulse {
-            0% {
-                transform: translateY(-5px) scale(1.05) rotateY(5deg);
-            }
-            100% {
-                transform: translateY(-7px) scale(1.08) rotateY(8deg);
-            }
-        }
-
-        @keyframes rippleEffect {
-            0% {
-                transform: scale(1);
-                opacity: 0.4;
-            }
-            100% {
-                transform: scale(1.4);
-                opacity: 0;
-            }
-        }
-
-        .card-preview h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            padding: 0 1rem;
-        }
-
-        .card-preview p {
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-        .add-btn-container {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 0;
-            animation: fadeIn 1s 0.5s forwards;
-        }
-
-        .add-card-btn {
-            background-color: #1f2937; /* Dark background instead of white */
-            color: white; /* White text instead of var(--text-color) */
-            border: none;
-            border-radius: 50px;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 4px 6px var(--shadow-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                      background-color 0.3s ease,
-                      box-shadow 0.3s ease;
-        }
-
-        .add-card-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 15px var(--shadow-color);
-            background-color: #111827; /* Slightly darker on hover */
-        }
-
-        /* Update the SVG inside the button to be white */
-        .add-card-btn svg {
-            stroke: white;
-        }
-
-        /* Modified shiny text effect for white text */
-        .add-card-btn .shiny-text {
-            display: inline-block;
-            background: linear-gradient(
-                120deg,
-                rgba(255, 255, 255, 0.8) 40%,
-                rgba(255, 255, 255, 1) 50%,
-                rgba(255, 255, 255, 0.8) 60%
-            );
-            background-size: 200% 100%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
-            /* Add fallback for browsers that don't support background-clip */
-            color: white; 
-            font-weight: 500;
-        }
-
-        @keyframes shine {
-            0% {
-                background-position: 100% 0;
-            }
-            100% {
-                background-position: -100% 0;
-            }
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background-color: white;
-            border-radius: 20px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            transform: translateY(20px);
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-        }
-
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal h2 {
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 1.5rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .btn-secondary {
-            background-color: #e5e7eb;
-            color: var(--text-color);
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .card-details {
-            background-color: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 25px var(--shadow-color);
-            animation: fadeIn 0.5s ease;
-            max-width: 500px; /* Add this line */
-            margin: 0 auto; /* Add this line */
-        }
-
-        .card-details h2 {
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .card-info {
-            margin-bottom: 1.5rem;
-        }
-
-        .card-info p {
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .card-info p span:first-child {
-            font-weight: 500;
-        }
-
-        .delete-btn {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .delete-btn:hover {
-            background-color: #fecaca;
-            transform: translateY(-2px);
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 1rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--text-color);
-            padding: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .back-btn:hover {
-            transform: translateX(-5px);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 0;
-            color: #6b7280;
-            animation: fadeIn 0.8s ease;
-        }
-
-        .empty-state svg {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 1rem;
-            color: #d1d5db;
-            animation: pulse 2s infinite alternate ease-in-out;
-        }
-
-        .empty-state h3 {
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .card-type-badge {
-            display: none; /* Hide the badge */
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes cardPulse {
-            0% {
-                background-position: 0% 0%;
-            }
-            100% {
-                background-position: 100% 100%;
-            }
-        }
-
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-            z-index: 2000;
-        }
-
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .error-notification {
-            background-color: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .card-logo {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            color: #6b7280;
-        }
-
-        /* Card color schemes */
-        .card-visa {
-            background: linear-gradient(135deg, #1c2e94, #3a4ebd);
-            color: white;
-        }
-
-        .card-mastercard {
-            background: linear-gradient(135deg, #ff8a00, #ffbd45);
-            color: white;
-        }
-
-        .card-amex {
-            background: linear-gradient(135deg, #0071ce, #3d9bff);
-            color: white;
-        }
-
-        .card-discover {
-            background: linear-gradient(135deg, #ff6d00, #ffad75);
-            color: white;
-        }
-
-        .card-generic {
-            background: linear-gradient(135deg, #D46A6A, #FFF8F0);
-            color: #1f2937; /* Set the default text color for this card type */
-        }
-
-        .card-generic p {
-            color: #1f2937; /* Dark text for better contrast */
-            text-shadow: none; /* Remove the text shadow that's meant for light text on dark backgrounds */
-        }
-
-        /* Add this rule for the headings in generic cards if needed */
-        .card-generic h3 {
-            color: #1f2937; /* Dark text for the card nickname */
-        }
-
-        .card-icon-container {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        /* Auth Form Styles */
-        .auth-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px var(--shadow-color);
-            animation: fadeIn 0.5s ease;
-            transition: transform 0.5s ease, box-shadow 0.3s ease;
-        }
-
-        .auth-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .auth-container h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            font-weight: 500;
-        }
-
-        .auth-tab.active {
-            border-bottom: 2px solid var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .auth-form {
-            margin-bottom: 1rem;
-        }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .auth-switch a {
-            color: var(--accent-color);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .user-menu {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 2rem;
-            align-items: center;
-            gap: 1rem;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .user-email {
-            font-weight: 500;
-        }
-
-        .logout-btn {
-            background-color: #e5e7eb;
-            color: var(--text-color);
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background-color: #d1d5db;
-            transform: translateY(-2px);
-        }
-
-        /* Loading spinner */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--accent-color);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .loading-btn {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-        
-        .loading-btn .loader {
-            display: inline-block;
-        }
-        
-        .btn .loader {
-            display: none;
-        }
-
-        /* Enhanced Styles for SplitText */
-        .split-text {
-            display: inline-block;
-        }
-
-        /* Letter animation for title */
-        .letter {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(40px) rotate(10deg);
-            filter: blur(5px);
-            animation: letterReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes letterReveal {
-            0% {
-                opacity: 0;
-                transform: translateY(40px) rotate(10deg);
-                filter: blur(5px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) rotate(0);
-                filter: blur(0);
-            }
-        }
-
-        /* Enhanced Styles for ShinyText */
-        .shiny-text {
-            display: inline-block;
-            background: linear-gradient(
-                120deg,
-                rgba(255, 255, 255, 0) 40%,
-                rgba(255, 255, 255, 0.8) 50%,
-                rgba(255, 255, 255, 0) 60%
-            );
-            background-size: 200% 100%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
-        }
-
-        @keyframes shine {
-            0% {
-                background-position: 100% 0;
-            }
-            100% {
-                background-position: -100% 0;
-            }
-        }
+    --primary-color: #FFF8F0;
+    --accent-color: #D46A6A;
+    --text-color: #1f2937;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    /* Portfolio variables */
+    --first-hue: 250;
+    --sat: 66%;
+    --lig: 75%;
+    --second-hue: 219;
+    --first-color: hsl(var(--first-hue), var(--sat), var(--lig));
+    --first-color-alt: hsl(var(--first-hue), var(--sat), 71%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding: 2rem;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+    font-size: 2.5rem;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: var(--accent-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.loading-spinner p {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 2rem;
+    position: relative; 
+    min-height: 200px; 
+}
+
+/* Enhanced card styling with portfolio animations */
+.card-preview {
+    background: linear-gradient(
+        180deg,
+        hsla(var(--first-hue), var(--sat), var(--lig), 0.5),
+        hsla(var(--first-hue), var(--sat), var(--lig), 0.1)
+    );
+    border-radius: 50%;
+    height: 200px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    background-size: 200% 200%;
+    animation: cardPulse 8s infinite alternate ease-in-out;
+    perspective: 1000px;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.5s ease, 
+                background-position 10s linear infinite;
+}
+
+.card-preview:hover {
+    transform: translateY(-8px) scale(1.05) rotateY(5deg);
+    box-shadow: 0 15px 30px rgba(var(--first-hue), var(--sat), var(--lig), 0.15),
+                0 0 15px rgba(212, 106, 106, 0.5);
+}
+
+/* Reveal animation from portfolio */
+.reveal-animation {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.reveal-animation.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Ripple Effect on Hover */
+.card-preview::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    opacity: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+    transform: scale(0.7);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
+
+.card-preview:hover::after {
+    opacity: 1;
+    transform: scale(1.2);
+    animation: rippleEffect 1.5s infinite;
+}
+
+/* Content Raise Effect */
+.card-preview .card-icon-container,
+.card-preview h3,
+.card-preview p {
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-preview:hover .card-icon-container {
+    transform: translateY(-7px) scale(1.05);
+}
+
+.card-preview:hover h3 {
+    transform: translateY(-3px);
+}
+
+.card-preview:hover p {
+    transform: translateY(-1px);
+}
+
+/* New Animation Keyframes */
+@keyframes pulse {
+    0% {
+        transform: translateY(-5px) scale(1.05) rotateY(5deg);
+    }
+    100% {
+        transform: translateY(-7px) scale(1.08) rotateY(8deg);
+    }
+}
+
+@keyframes rippleEffect {
+    0% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+.card-preview h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.card-preview p {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.add-btn-container {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+    animation: fadeIn 1s 0.5s forwards;
+}
+
+.add-card-btn {
+    background-color: #1f2937;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              background-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+.add-card-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px var(--shadow-color);
+    background-color: #111827;
+}
+
+.add-card-btn svg {
+    stroke: white;
+}
+
+.add-card-btn .shiny-text {
+    display: inline-block;
+    background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.8) 40%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(255, 255, 255, 0.8) 60%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 5s linear infinite;
+    color: white; 
+    font-weight: 500;
+}
+
+@keyframes shine {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: var(--text-color);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.card-details {
+    background-color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px var(--shadow-color);
+    animation: fadeIn 0.5s ease;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.card-details h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.card-info {
+    margin-bottom: 1.5rem;
+}
+
+.card-info p {
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-info p span:first-child {
+    font-weight: 500;
+}
+
+.delete-btn {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 1rem;
+}
+
+.delete-btn:hover {
+    background-color: #fecaca;
+    transform: translateY(-2px);
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-color);
+    padding: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.back-btn:hover {
+    transform: translateX(-5px);
+}
+
+.hidden {
+    display: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 0;
+    color: #6b7280;
+    animation: fadeIn 0.8s ease;
+}
+
+.empty-state svg {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+    color: #d1d5db;
+    animation: pulse 2s infinite alternate ease-in-out;
+}
+
+.empty-state h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.card-type-badge {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardPulse {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    z-index: 2000;
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.error-notification {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.card-logo {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+}
+
+/* Card color schemes */
+.card-visa {
+    background: linear-gradient(135deg, #1c2e94, #3a4ebd);
+    color: white;
+}
+
+.card-mastercard {
+    background: linear-gradient(135deg, #ff8a00, #ffbd45);
+    color: white;
+}
+
+.card-amex {
+    background: linear-gradient(135deg, #0071ce, #3d9bff);
+    color: white;
+}
+
+.card-discover {
+    background: linear-gradient(135deg, #ff6d00, #ffad75);
+    color: white;
+}
+
+.card-generic {
+    background: linear-gradient(135deg, #D46A6A, #FFF8F0);
+    color: #1f2937;
+}
+
+.card-generic p {
+    color: #1f2937;
+    text-shadow: none;
+}
+
+.card-generic h3 {
+    color: #1f2937;
+}
+
+.card-icon-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Auth Form Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    animation: fadeIn 0.5s ease;
+    transition: transform 0.5s ease, box-shadow 0.3s ease;
+}
+
+.auth-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.auth-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-tabs {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+}
+
+.auth-tab.active {
+    border-bottom: 2px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+.auth-form {
+    margin-bottom: 1rem;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.auth-switch a {
+    color: var(--accent-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.user-menu {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    align-items: center;
+    gap: 1rem;
+    animation: fadeIn 0.5s ease;
+}
+
+.user-email {
+    font-weight: 500;
+}
+
+.logout-btn {
+    background-color: #e5e7eb;
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #d1d5db;
+    transform: translateY(-2px);
+}
+
+/* Loading spinner */
+.loader {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--accent-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-btn {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading-btn .loader {
+    display: inline-block;
+}
+
+.btn .loader {
+    display: none;
+}
+
+/* Enhanced Styles for SplitText */
+.split-text {
+    display: inline-block;
+}
+
+/* Letter animation for title */
+.letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotate(10deg);
+    filter: blur(5px);
+    animation: letterReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes letterReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) rotate(10deg);
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotate(0);
+        filter: blur(0);
+    }
+}
+
+/* Enhanced Styles for ShinyText */
+.shiny-text {
+    display: inline-block;
+    background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0) 60%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 5s linear infinite;
+}
+
+/* Copy button styles */
+.copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+    color: var(--accent-color);
+    transition: transform 0.2s ease, opacity 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy-btn:hover {
+    transform: scale(1.1);
+}
+
+.copy-btn.copied {
+    color: #22c55e;
+}
+
+.copy-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.card-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+}
+
+.card-info-content {
+    display: flex;
+    align-items: center;
+}
+
+.copy-feedback {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: #22c55e;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+}
+
+.copy-feedback.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mobile spacing fixes */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .card-details {
+        padding: 1.5rem;
+    }
+
+    .card-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .card-info-row:last-child {
+        border-bottom: none;
+    }
+
+    .card-info-content {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .card-info {
+        margin-bottom: 2rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -823,22 +911,43 @@
                 <div class="card-details">
                     <h2 id="card-detail-nickname">Card Nickname</h2>
                     <div class="card-info">
-                        <p>
+                        <div class="card-info-row">
                             <span>Card Number:</span>
-                            <span id="card-detail-number">1234 1234 1234 1234</span>
-                        </p>
-                        <p>
+                            <div class="card-info-content">
+                                <span id="card-detail-number">1234 1234 1234 1234</span>
+                                <button class="copy-btn" data-copy-target="card-detail-number" title="Copy card number">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-info-row">
                             <span>Expiration Date:</span>
-                            <span id="card-detail-expiry">MM/YY</span>
-                        </p>
-                        <p>
+                            <div class="card-info-content">
+                                <span id="card-detail-expiry">MM/YY</span>
+                                <button class="copy-btn" data-copy-target="card-detail-expiry" title="Copy expiration date">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-info-row">
                             <span>3 Numbers On Da Back:</span>
-                            <span id="card-detail-three">123</span>
-                        </p>
-                        <p>
+                            <div class="card-info-content">
+                                <span id="card-detail-three">123</span>
+                                <button class="copy-btn" data-copy-target="card-detail-three" title="Copy CVV">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-info-row">
                             <span>Card Type:</span>
                             <span id="card-detail-type">Visa</span>
-                        </p>
+                        </div>
                     </div>
 
                     <button id="delete-card-btn" class="delete-btn">Delete Card</button>
@@ -885,6 +994,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
             <span id="notification-message">Card added successfully!</span>
+        </div>
+
+        <!-- Copy feedback -->
+        <div id="copy-feedback" class="copy-feedback">
+            Copied to clipboard!
         </div>
     </div>
 
@@ -1073,6 +1187,96 @@
 
             // Initialize enhanced animations
             initEnhancedAnimations();
+            
+            // Initialize copy buttons
+            initCopyButtons();
+        }
+        
+        // Initialize copy buttons functionality
+        function initCopyButtons() {
+            // Event delegation for copy buttons
+            document.addEventListener('click', async (e) => {
+                const copyBtn = e.target.closest('.copy-btn');
+                if (copyBtn) {
+                    e.preventDefault();
+                    
+                    const targetId = copyBtn.dataset.copyTarget;
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        let textToCopy = targetElement.textContent.trim();
+                        
+                        // If copying card number, remove spaces
+                        if (targetId === 'card-detail-number') {
+                            textToCopy = textToCopy.replace(/\s/g, '');
+                        }
+                        
+                        try {
+                            await navigator.clipboard.writeText(textToCopy);
+                            
+                            // Visual feedback
+                            copyBtn.classList.add('copied');
+                            
+                            // Change icon temporarily to checkmark
+                            const originalIcon = copyBtn.innerHTML;
+                            copyBtn.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            `;
+                            
+                            // Show feedback toast
+                            showCopyFeedback();
+                            
+                            // Reset after 2 seconds
+                            setTimeout(() => {
+                                copyBtn.classList.remove('copied');
+                                copyBtn.innerHTML = originalIcon;
+                            }, 2000);
+                            
+                        } catch (err) {
+                            // Fallback for browsers that don't support clipboard API
+                            fallbackCopyTextToClipboard(textToCopy);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fallback function for older browsers
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // Avoid scrolling to bottom
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopyFeedback();
+                }
+            } catch (err) {
+                console.error('Fallback: Could not copy text: ', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        // Show copy feedback
+        function showCopyFeedback() {
+            const feedback = document.getElementById('copy-feedback');
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 1500);
         }
         
         // Initialize the app
@@ -1436,6 +1640,9 @@
                 }, 300);
             }, 3000);
         }
+        
+        // Keep the same name as the original function
+        window.showNotification = showEnhancedNotification;
 
         // ScrollReveal animation - similar to portfolio
         function initScrollReveal() {
