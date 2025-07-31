@@ -1063,7 +1063,7 @@ h1 {
                             <span id="card-detail-type">Visa</span>
                         </div>
                     </div>
-
+                    <button id="edit-card-btn" class="btn btn-primary" style="margin-right: 10px;">Edit</button>
                     <button id="delete-card-btn" class="delete-btn">Delete Card</button>
                 </div>
             </div>
@@ -1121,7 +1121,7 @@ h1 {
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js';
-        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, deleteDoc, query, where } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, deleteDoc, updateDoc, query, where } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
 
         // Your web app's Firebase configuration
         // These are your actual Firebase configuration details from your project
@@ -1304,6 +1304,16 @@ h1 {
             
             // Initialize copy buttons
             initCopyButtons();
+
+            // Edit card functionality
+            document.getElementById('edit-card-btn').addEventListener('click', () => {
+                document.getElementById('card-nickname').value = cardDetailNickname.textContent;
+                document.getElementById('card-number').value = cardDetailNumber.textContent.replace(/\s/g, '');
+                document.getElementById('card-expiry').value = cardDetailExpiry.textContent;
+                document.getElementById('card-cvv').value = cardDetailHolder.textContent;
+                addCardForm.dataset.editingId = deleteCardBtn.dataset.cardId;
+                addCardModal.classList.add('active');
+            });
         }
         
         // Initialize copy buttons functionality
@@ -1513,19 +1523,26 @@ h1 {
             };
             
             try {
-                // Add card to Firestore
-                await addDoc(collection(db, "cards"), newCard);
+                const editingId = addCardForm.dataset.editingId;
+                if (editingId) {
+                    // Update existing card
+                    await updateDoc(doc(db, "cards", editingId), newCard);
+                    delete addCardForm.dataset.editingId;
+                    showEnhancedNotification('Card updated successfully!');
+                    showHomeView();
+                } else {
+                    // Add new card to Firestore
+                    await addDoc(collection(db, "cards"), newCard);
+                    showEnhancedNotification('Card added successfully!');
+                }
                 
                 // Close modal
                 closeAddCardModal();
                 
-                // Show notification
-                showEnhancedNotification('Card added successfully!');
-                
                 // Reload cards
                 loadCards();
             } catch (error) {
-                showEnhancedNotification(`Error adding card: ${error.message}`, true);
+                showEnhancedNotification(`Error ${addCardForm.dataset.editingId ? 'updating' : 'adding'} card: ${error.message}`, true);
             } finally {
                 submitBtn.classList.remove('loading-btn');
             }
